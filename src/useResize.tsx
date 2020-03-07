@@ -1,9 +1,15 @@
 import React from "react";
 
+/**
+ * Types
+ */
 type useResizeProps = {
   onMouseMove: (e: MouseEvent) => void;
 };
 
+/**
+ * Hook
+ */
 const useResize = (props: useResizeProps) => {
   const { onMouseMove } = props;
   const [isResizing, setIsResizing] = React.useState(false);
