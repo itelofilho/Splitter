@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 /**
  * Helpers
@@ -26,7 +26,7 @@ const shift = 16;
 type useKeyboardResizeProps = {
   totalSize: number;
   setWidth: React.Dispatch<React.SetStateAction<[number, number]>>;
-} 
+};
 
 /**
  * Hook
@@ -34,7 +34,7 @@ type useKeyboardResizeProps = {
 const useKeyboardResize = (props: useKeyboardResizeProps) => {
   const { totalSize, setWidth } = props;
   const [downKeys, setDowndownKeys] = React.useState([] as number[]);
-    
+
   const keyup = React.useCallback(
     (ev: KeyboardEvent) => {
       setDowndownKeys(downKeys.filter(keyCode => keyCode !== ev.keyCode));
@@ -43,14 +43,16 @@ const useKeyboardResize = (props: useKeyboardResizeProps) => {
   );
 
   const decreasePane = React.useCallback(
-    (value: number) => setWidth(width => createWidths(width[0] - value, totalSize)),
+    (value: number) =>
+      setWidth(width => createWidths(width[0] - value, totalSize)),
     [setWidth, totalSize]
   );
   const increasePane = React.useCallback(
-    (value: number) => setWidth(width => createWidths(width[0] + value, totalSize)),
+    (value: number) =>
+      setWidth(width => createWidths(width[0] + value, totalSize)),
     [setWidth, totalSize]
   );
-    
+
   const handleKeyPress = React.useCallback(() => {
     switch (true) {
       /**
@@ -77,7 +79,7 @@ const useKeyboardResize = (props: useKeyboardResizeProps) => {
         return increasePane(5);
     }
   }, [decreasePane, downKeys, increasePane]);
-    
+
   const keydown = React.useCallback(
     (ev: KeyboardEvent) => {
       if (downKeys.includes(ev.keyCode)) {
@@ -102,6 +104,6 @@ const useKeyboardResize = (props: useKeyboardResizeProps) => {
   }, [keydown, keyup]);
 
   return;
-}
- 
+};
+
 export default useKeyboardResize;

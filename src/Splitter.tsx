@@ -62,12 +62,12 @@ const Splitter = (props: SplitterProps) => {
   useKeyboardResize({ setWidth, totalSize });
 
   return (
-    <SplitterContainer>
-      <PaneContainer style={{ width: width[0] }}>
+    <SplitterContainer data-testid="splitter-container">
+      <PaneContainer style={{ width: width[0] }} data-testid="pane-container-1">
         {props.children[0]}
       </PaneContainer>
-      <Gutter {...gutterProps} />
-      <PaneContainer style={{ width: width[1] }}>
+      <Gutter {...gutterProps} data-testid="gutter" />
+      <PaneContainer style={{ width: width[1] }} data-testid="pane-container-2">
         {props.children[1]}
       </PaneContainer>
     </SplitterContainer>
