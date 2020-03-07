@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import useResize from './useResize';
 
 const Splitter = styled.div`
   display: flex;
@@ -23,57 +24,58 @@ const Pane2 = styled.div`
   background: purple;
 `;
 
+const c = 67;
+const h = 72
+const j = 74;
+const k = 75;
+const l = 76;
+const shift = 16;
+
 const createWidths = (width: number, total: number) => {
   // console.log({width, total});
   if (width < 0) return [0, total];
   if (width > total) return [total, 0];
   return [width, total - width];
 }
+
+const include = (arr: number[], valuesToBeSearchable: number[]) => {
+  return valuesToBeSearchable.every(value => arr.includes(value))
+}
+
 function App() {
   const [width, setWidth] = React.useState(createWidths(400, 400))
-  const [isResizing, setIsResizing] = React.useState(false);
+  const { gutterProps }= useResize({
+    onMouseMove: (e) => setWidth(createWidths(e.clientX, 400))
+  })
+  
 
   const [downKeys, setDowndownKeys] = React.useState([] as number[]);
 
-  const handleMove = React.useCallback((e: MouseEvent) => {
-    setWidth(createWidths(e.clientX, 400));
-  }, []);
-
-  const handleUp = React.useCallback(() => setIsResizing(false), [])
-
-  React.useEffect(() => {
-    if (isResizing) {
-      window.addEventListener('mousemove', handleMove, true)
-      window.addEventListener('mouseup', handleUp, true)
-    } else {
-      window.removeEventListener("mousemove", handleMove, true)
-      window.removeEventListener('mouseup', handleUp, true)
-    }
-  }, [isResizing, handleMove, handleUp]);
+  
 
   const keyup = React.useCallback((ev: KeyboardEvent) => {
-    console.log(downKeys.filter(keyCode => keyCode !== ev.keyCode))
     setDowndownKeys(downKeys.filter(keyCode => keyCode !== ev.keyCode));
   }, [downKeys])
 
+  const decreasePane = (value: number) => setWidth(createWidths(width[0] - value, 400));
+  const increasePane = (value: number) => setWidth(createWidths(width[0] + value, 400))
 
   const fira = () => {
-    console.log(downKeys)
-    if (downKeys.includes(67) && downKeys.includes(74) && downKeys.includes(16)) {
-      console.log("downKeys.includes(67) && downKeys.includes(74) && downKeys.includes(16)");
-      return setWidth(createWidths(width[0] - 10, 400));
-    }
-    if (downKeys.includes(67) && downKeys.includes(74)) {
-      console.log("downKeys.includes(67) && downKeys.includes(74)");
-      return setWidth(createWidths(width[0] - 1, 400));
-    }
-    if (downKeys.includes(67) && downKeys.includes(72) && downKeys.includes(16)) {
-      console.log("downKeys.includes(67) && downKeys.includes(72) && downKeys.includes(16)");
-      return setWidth(createWidths(width[0] - 50, 400));
-    }
-    if (downKeys.includes(67) && downKeys.includes(72)) {
-      console.log("downKeys.includes(67) && downKeys.includes(72)");
-      return setWidth(createWidths(width[0] - 5, 400));
+    switch (true) {
+      /**
+       * decrease pane
+       */
+      case include(downKeys,[c, j, shift]): return decreasePane(10);
+      case include(downKeys,[c, j]): return decreasePane(1);
+      case include(downKeys, [c, h, shift]): return decreasePane(50);
+      case include(downKeys, [c, h]): return decreasePane(5);
+      /**
+       * increase pane
+       */
+      case include(downKeys,[c, k, shift]): return increasePane(10);
+      case include(downKeys,[c, k]): return increasePane(1);
+      case include(downKeys, [c, l, shift]): return increasePane(50);
+      case include(downKeys, [c, l]): return increasePane(5);
     }
   }
 
@@ -101,12 +103,7 @@ function App() {
   return (
     <Splitter>
       <Pane1 style={{width: width[0] }}>dasdasdasdasdasdsadsaa</Pane1>
-      <Gutter 
-        onClick={e => {
-          e.preventDefault();
-          setIsResizing(true);
-        }}
-        />
+      <Gutter {...gutterProps} />
       <Pane2 style={{width: width[1] }}>b</Pane2>
     </Splitter>
   );
