@@ -44,8 +44,11 @@ const include = (arr: number[], valuesToBeSearchable: number[]) => {
 
 function App() {
   const [width, setWidth] = React.useState(createWidths(400, 400))
+
+  const handleMouseMove = React.useCallback((e) => setWidth(createWidths(e.clientX, 400)), [setWidth]);
+
   const { gutterProps }= useResize({
-    onMouseMove: (e) => setWidth(createWidths(e.clientX, 400))
+    onMouseMove: handleMouseMove
   })
   
 
